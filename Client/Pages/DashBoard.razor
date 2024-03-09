@@ -1,0 +1,360 @@
+﻿@page "/DashBoard"
+@inject HttpClient Http
+@inject DialogService dialogService
+
+@using BlazorApp1.Shared;
+@using System.Linq;
+@using System.Text;
+
+
+
+<PageTitle>SI-Flex | DashBoard</PageTitle>
+    <div class="row my-1">
+        <div class="col-sm-12 col-lg-12">
+            <RadzenCard>            
+                <RadzenLabel Text="Color Scheme:"/>
+                <RadzenDropDown Data="@colorSchemes" @bind-Value="@colorScheme"/>
+            </RadzenCard>
+        </div>
+    </div>
+        
+    
+
+    
+
+<!--    출고 현황 Button    -->
+<div class="row my-5">
+    <RadzenPanel AllowCollapse="true" Class="rz-my-10 rz-mx-auto rz-shadow-2" Style="width: 100%;">
+      <RadzenText TextStyle="TextStyle.H5" Style="width: 700px;">[계획/출고]</RadzenText>
+        <div class="col-sm-12 col-lg-8" style="float:left; width: 700px;">
+            <RadzenCard class="rz-shadow-3">
+                <div class="rz-p-12 rz-text-align-center">
+                    <div class="pick-request-botton-container">
+                        <RadzenButton Text="@($"출고 계획 : {Allcnt}")"
+                                      Click="@(args => OpenDialog("All"))"
+                                      ButtonStyle="ButtonStyle.Primary"
+                                      class="pick-request-button" />
+                        <RadzenButton Text="@($"출고 완료 : {CompleteCnt}")"
+                                      Click="@(args => OpenDialog("Completed"))"
+                                      ButtonStyle="ButtonStyle.Info"
+                                      class="pick-request-button" />
+                        <RadzenButton Text="@($"미출고 : {MissingCnt}")"
+                                      Click="@(args => OpenDialog("Missing"))"
+                                      ButtonStyle="ButtonStyle.Secondary"
+                                      class="pick-request-button" />
+                    <!--    
+                        <div style="margin-right: 5px; text-align: center; margin-top : -45px; margin-right : 15px; margin-left : -35px">
+                            <RadzenText Text="출고 계획" />
+                            <RadzenButton Text="@cnt.ToString()" ButtonStyle="ButtonStyle.Primary" Style="margin-top : 10px; width: 55px; height: 55px; text-align : center; "/>
+                        </div>
+                        <div style="margin-right: 5px; text-align: center; margin-top : -45px; margin-right : 15px;">
+                            <RadzenText Text="출고 완료" />
+                            <RadzenButton Text="@CompleteCnt.ToString()" ButtonStyle="ButtonStyle.Info" Style="margin-top : 10px; width: 55px; height: 55px; text-align : center;" />
+                        </div>
+                        <div style="text-align: center; text-align: center; margin-top : -45px; margin-right : 15px;">
+                            <RadzenText Text="미출고" />
+                            <RadzenButton Text="@MissingCnt.ToString()" ButtonStyle="ButtonStyle.Secondary" Style="margin-top : 10px; width: 55px; height: 55px; text-align : center;" />
+                        </div>
+                    -->
+                    </div>
+                    <div class="rz-p-7 rz-text-align-center">
+                        <div class="pick-request-botton-container">
+                            <RadzenRadialGauge Style="width: 100%; height: 300px;">
+                                <RadzenRadialGaugeScale StartAngle="-150" EndAngle="150" Step="10" Min="0" Max="100" TickPosition=@tickPosition>
+                                    <RadzenRadialGaugeScalePointer Value=@Requestion_Persent Length="0.6">
+                                        <Template Context="pointer">
+                                            <h3>
+                                                @pointer.Value
+                                            </h3>
+                                        </Template>
+                                    </RadzenRadialGaugeScalePointer>
+                                    <RadzenRadialGaugeScaleRange From="0" To="60" Fill="green" />
+                                    <RadzenRadialGaugeScaleRange From="60" To="85" Fill="orange" />
+                                    <RadzenRadialGaugeScaleRange From="85" To="100" Fill="red" />
+                                </RadzenRadialGaugeScale>
+                            </RadzenRadialGauge>
+                        </div>
+                    </div>
+                </div>
+            </RadzenCard>
+        </div>
+    </RadzenPanel>
+</div>
+
+
+
+
+<!--   WIP[생산]     -->
+<div class="row my-5">
+        <RadzenPanel AllowCollapse="true" Class="rz-my-10 rz-mx-auto" Style="width: 100%;">
+        <RadzenText TextStyle="TextStyle.H5">[실적]</RadzenText>
+
+        <div class="col-sm-12 col-lg-8" style="float:left;">
+            
+        <RadzenText TextStyle="TextStyle.H6">Model Top 10</RadzenText>
+            <RadzenCard>
+                <RadzenChart ColorScheme="@colorScheme">
+                    <RadzenLineSeries Data="planactualTemps?
+                                                .Where(c => c.QtyTotal != null)
+                                                .GroupBy(c => c.ItemCode)
+                                                .Select(group => new {
+                                                    ItemCode = group.Key,
+                                                    QtyTotal = group.Sum(c => c.QtyTotal ?? 0)
+                                                })?.OrderByDescending(c => c.QtyTotal).Take(10)"
+                                      CategoryProperty="ItemCode"
+                                      ValueProperty="QtyTotal"
+                                      Title="Total Qty(Line)"
+                                      LineType="LineType.Dashed">
+                        <RadzenMarkers MarkerType="MarkerType.Circle"/>
+
+                        <RadzenSeriesDataLabels Visible="@ShowDatalabels" />
+                    </RadzenLineSeries>
+                    <RadzenColumnSeries Data="planactualTemps?
+                                                .Where(c => c.QtyTotal != null) 
+                                                .GroupBy(c => c.ItemCode)
+                                                .Select(group => new {
+                                                    ItemCode = group.Key,
+                                                    QtyTotal = group.Sum(c => c.QtyTotal ?? 0)
+                                                }).OrderByDescending(c => c.QtyTotal).Take(10)"
+                                        CategoryProperty="ItemCode"
+                                        ValueProperty="QtyTotal"
+                                        Title="Total Qty(Column)"/>
+                                   <RadzenLegend Position="LegendPosition.Bottom"/>
+                                   <RadzenColumnOptions Radius="10" Width="50"/>
+                                   <RadzenCategoryAxis Padding="5"/>
+
+                                   <RadzenValueAxis>
+                                       <RadzenGridLines Visible ="true"/>
+                                       <RadzenAxisTitle Text = "Total Qty"/>
+                                   </RadzenValueAxis>
+                </RadzenChart>
+        </RadzenCard>
+
+        </div>
+   
+    <!--  모델 Top 10    -->
+    <div class="col-sm-12 col-lg-4" style=" float : right;">
+            <RadzenText TextStyle="TextStyle.H6">Model Top 10</RadzenText>
+            <RadzenCard>
+                <RadzenChart ColorScheme="@colorScheme">
+                <RadzenPieSeries Data="planactualTemps?
+                                            .Where(c => c.QtyTotal != null) 
+                                            .GroupBy(c => c.ItemCode)
+                                            .Select(group => new {
+                                                ItemCode = group.Key,
+                                                QtyTotal = group.Sum(c => c.QtyTotal ?? 0) 
+                                            }).OrderByDescending(c => c.QtyTotal).Take(10)"
+                                 CategoryProperty="ItemCode"
+                                 ValueProperty="QtyTotal"
+                                 Title="Total Qty(Donut)"/>
+                
+                </RadzenChart>
+            </RadzenCard>
+        </div>
+    </RadzenPanel>
+
+    <!--  Plan Top 5 (40,41,42)    -->
+    <div class="row my-5">
+        <div class="col-sm-12 col-lg-4">
+            <RadzenText TextStyle="TextStyle.H6">D + 40 Top 5</RadzenText>
+            <RadzenCard>
+                <RadzenChart ColorScheme="@colorScheme">
+
+                    <RadzenDonutSeries Data="@planactualTemps?.Where(c => c.Qty40 != null&& c.SortType == "Plan").OrderByDescending(c => c.Qty40).Take(5)"
+                                    CategoryProperty="ItemCode"
+                                       ValueProperty="Qty40"
+                                    TotalAngle="180"
+                                    StartAngle="180">
+                        <ChildContent>
+                            <RadzenSeriesDataLabels Visible="@ShowDatalabels" />
+                        </ChildContent>
+                    <TitleTemplate>
+                            <div class="rz-donut-content">
+                            <div>D + 40 Top 5</div>
+                                <div>(Plan)</div>
+                            </div>
+                    </TitleTemplate>
+
+                    </RadzenDonutSeries>
+                    </RadzenChart>
+
+            </RadzenCard>
+        
+        
+        </div>
+        <div class="col-sm-12 col-lg-4">
+            <RadzenText TextStyle="TextStyle.H6">D + 41 Top 5</RadzenText>
+            <RadzenCard>
+                <RadzenChart ColorScheme="@colorScheme">
+                    <RadzenDonutSeries Data="@planactualTemps?.Where(c => c.Qty41 != null&& c.SortType == "Plan").OrderByDescending(c => c.Qty41).Take(5)"
+                                       CategoryProperty="ItemCode"
+                                       ValueProperty="Qty41"
+                                       TotalAngle="180"
+                                       StartAngle="180">
+                        <ChildContent>
+                            <RadzenSeriesDataLabels Visible="@ShowDatalabels"/>
+                        </ChildContent>
+
+                        <TitleTemplate>
+                            <div class ="rz-donut-content">
+                                <div>D + 41 Top 5</div>
+                                <div>(Plan)</div>
+                            </div>
+                        </TitleTemplate>
+                    </RadzenDonutSeries>
+                </RadzenChart>
+            </RadzenCard>
+
+
+        </div>
+        <div class="col-sm-12 col-lg-4">
+            <RadzenText TextStyle="TextStyle.H6">D + 42 Top 5</RadzenText>
+            <RadzenCard>
+                <RadzenChart ColorScheme="@colorScheme">
+                    <RadzenDonutSeries Data="@planactualTemps?.Where(c => c.Qty42 != null && c.SortType == "Plan").OrderByDescending(c => c.Qty42).Take(5)"
+                                       CategoryProperty="ItemCode"
+                                       ValueProperty="Qty42"
+                                       TotalAngle="180"
+                                       StartAngle="180">
+                        <ChildContent>
+                            <RadzenSeriesDataLabels Visible="@ShowDatalabels" />
+                        </ChildContent>
+                        <TitleTemplate>
+                            <div class="rz-donut-content">
+                                <div>D + 42 Top 5</div>
+                                <div>(Plan)</div>
+                            </div>
+                        </TitleTemplate>
+                    </RadzenDonutSeries>
+                </RadzenChart>
+            </RadzenCard>
+        </div>
+        </div>
+    
+    <!--  Sort Type별 StackBar Chart    -->
+    <div class="row my-10">
+        <div class="col-sm-12 col-lg-12">
+            <RadzenText TextStyle="TextStyle.H6">Sort Type</RadzenText>
+            <RadzenChart ColorScheme="@colorScheme">
+                <RadzenStackedBarSeries Data="@planactualTemps?.Where(c => c.EntryDescription == "한국 -> 베트남").GroupBy(c => c.EntryDescription).Select(group => new {
+                                                                                                                            Description = group.Key,
+                                                                                                                            Count = group.Count() 
+                                                                                                                        }).OrderBy(c => c.Count)"
+                                                                                                                 CategoryProperty="Description"
+                                                                                                                 ValueProperty="Count"
+                                                                                                                 Title="한국 -> 베트남 Count">
+                    <RadzenSeriesDataLabels Visible="@ShowDatalabels" />
+                </RadzenStackedBarSeries>
+                <RadzenStackedBarSeries Data="@planactualTemps?.Where(c => c.EntryDescription == "베트남 -> 한국").GroupBy(c => c.EntryDescription).Select(group => new {
+                                                                                                                            Description = group.Key,
+                                                                                                                            Count = group.Count()
+                                                                                                                        }).OrderBy(c => c.Count)"
+                                        CategoryProperty="Description"
+                                        ValueProperty="Count"
+                                        Title="베트남 -> 한국 Count">
+                    <RadzenSeriesDataLabels Visible="@ShowDatalabels" />
+                </RadzenStackedBarSeries>
+                <RadzenStackedBarSeries Data="@planactualTemps?.Where(c => c.EntryDescription == "한국 -> 미국").GroupBy(c => c.EntryDescription).Select(group => new {
+                                                                                                                            Description = group.Key,
+                                                                                                                            Count = group.Count()
+                                                                                                                        }).OrderBy(c => c.Count)"
+                                        CategoryProperty="Description"
+                                        ValueProperty="Count"
+                                        Title="한국 -> 미국 Count">
+                    <RadzenSeriesDataLabels Visible="@ShowDatalabels" />
+                </RadzenStackedBarSeries>
+                <RadzenValueAxis>
+                    <RadzenGridLines Visible = "true"/>
+                    <RadzenAxisTitle Text= "Type"/>
+                </RadzenValueAxis>
+                <RadzenBarOptions Radius="5" Height="40"/>
+            </RadzenChart>
+        </div>
+
+    </div>
+
+
+
+
+    </div>
+
+
+
+@code {
+    private RadzenGoogleMap? map = new RadzenGoogleMap();
+
+    private bool ShowDatalabels = true;
+
+    private IEnumerable<ColorScheme> colorSchemes = Enum.GetValues(typeof(ColorScheme)).Cast<ColorScheme>();
+
+    private ColorScheme colorScheme = ColorScheme.Palette;
+
+    private IEnumerable<PlanactualTemp>? planactualTemps = new List<PlanactualTemp>();
+
+    private IEnumerable<InvPickRequest>? InvPickRequests = new List<InvPickRequest>();
+
+    IEnumerable<GaugeTickPosition> tickPositions = Enum.GetValues(typeof(GaugeTickPosition)).Cast<GaugeTickPosition>();
+    GaugeTickPosition tickPosition = GaugeTickPosition.Inside;
+
+    // 출고 수량파악
+    int Allcnt = 0;
+    int CompleteCnt = 0;
+    int MissingCnt = 0;
+    double Requestion_Persent = 0.0;
+
+
+    StringBuilder strBuilder = new StringBuilder("Init StringBuilder ");
+
+
+    void OpenDialog(string ListType)
+    {
+
+        int TypeCnt = 0;
+
+        if(ListType == "All")
+        {
+            TypeCnt = Allcnt;
+        }
+        else if (ListType == "Completed")
+        {
+            TypeCnt = CompleteCnt;
+        }
+        else if(ListType == "Missing")
+        {
+            TypeCnt = MissingCnt;
+        }
+
+        dialogService.Open<DialogCardPage>($"List : {TypeCnt}",
+                       new Dictionary<string, object>() { { "InvPickRequests", InvPickRequests },
+                                                          { "ListType", ListType }},
+                       new DialogOptions() { Width = "1400px", Height = "630px" });
+    }
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        planactualTemps = await Http.GetFromJsonAsync<List<PlanactualTemp>>("api/PlanActualTemp");
+
+
+        InvPickRequests = await Http.GetFromJsonAsync<List<InvPickRequest>>("api/InvPickRequest/SelectAll");
+
+        Allcnt = InvPickRequests.Count();
+
+        //출고 완료 수량
+        CompleteCnt = InvPickRequests.Count(request => request.PickFlag == "Y");
+
+        //미출고 수량
+        MissingCnt = InvPickRequests.Count(request => request.PickFlag == "N");
+
+        //출고 진행률
+        Requestion_Persent = Math.Round(((double)CompleteCnt / Allcnt) * 100, 1);
+    }
+
+}
+
+
+
+
+

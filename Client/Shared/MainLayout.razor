@@ -1,0 +1,34 @@
+﻿@inherits LayoutComponentBase
+
+<RadzenDialog />
+<div class="page">
+    
+        <div class="sidebar">
+            <NavMenu />
+        </div>
+
+    <main>
+        <div class="top-row px-4">
+            <a href="https://docs.microsoft.com/aspnet/" target="_blank">About</a>
+        </div>
+
+        <article class="content px-4">
+            @Body
+        </article>
+    </main>
+</div>
+<footer>
+    <div class="bottom-details">
+        <div class="bottom_text">
+            <span class="copyright_text">Copyright © @DateTime.Now.Year <a href="#">Plan Actual Report</a>All rights reserved</span>
+            <span class="policy_terms">
+                <a href="#">Privacy policy</a>
+                <a href="#">Terms & condition</a>
+            </span>
+        </div>
+    </div>
+</footer>
+
+@code {
+
+}

@@ -1,0 +1,203 @@
+﻿@page "/PlanActual"
+
+@inject HttpClient Http
+
+@using BlazorApp1.Shared;
+
+
+<PageTitle>SI-Flex | Report</PageTitle>
+
+<RadzenText TextStyle="TextStyle.H4" > 계획 대비 실적 </RadzenText>
+
+<RadzenDataGrid @ref="datagrid" Data="planactualTemps" AllowPaging="true" PageSize="50" AllowSorting="true" EditMode="DataGridEditMode.Single"
+                TItem="PlanactualTemp">
+                <Columns>
+                    <RadzenDataGridColumn TItem="PlanactualTemp" Property="ItemCode" Title="ItemCode" Width="140px">
+                                <EditTemplate Context="data">
+                                    <RadzenNumeric @bind-Value="data.ItemCode" Style="width:100%" />
+                                </EditTemplate>
+                    </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PlanactualTemp" Property="ItemDescription" Title="ItemDescription" Width="140px">
+                                <EditTemplate Context="data">
+                                    <RadzenNumeric @bind-Value="data.ItemDescription" Style="width:100%" />
+                                </EditTemplate>
+                    </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PlanactualTemp" Property="EntryDescription" EntryDescription="ItemCode" Width="140px">
+                        <EditTemplate Context="data">
+                            <RadzenNumeric @bind-Value="data.EntryDescription" Style="width:100%" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PlanactualTemp" Property="SortType" Title="SortType" Width="140px">
+                        <EditTemplate Context="data">
+                            <RadzenNumeric @bind-Value="data.SortType" Style="width:100%" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+        <RadzenDataGridColumn TItem="PlanactualTemp" Property="QtyTotal" Title="ItemCode" Width="140px">
+                        <EditTemplate Context="data">
+                            <RadzenNumeric @bind-Value="data.QtyTotal" Style="width:100%" />
+                        </EditTemplate>
+                    </RadzenDataGridColumn>
+     
+        @{
+            // 시작 날짜 설정
+            DateTime startDate = DateTime.Today;
+
+            // 날짜 컬럼 추가
+            for (int i = 0; i < 51; i++)
+            {
+                DateTime columnDate = startDate.AddDays(i);
+                string columnName = columnDate.ToString("yyyy-MM-dd");
+                columnName = columnName.Substring(0, 10);
+                if(@columnName == startDate.ToString())
+                {
+                    
+                }
+                <RadzenDataGridColumn TItem="PlanactualTemp" Property="@columnName" Title="@columnName" Width="140px" />
+            }
+        }
+
+
+                </Columns>
+
+</RadzenDataGrid>
+
+@code {
+
+    LogicalFilterOperator logicalFilterOperator = LogicalFilterOperator.And;
+
+    FilterCaseSensitivity filterCaseSensitivity = FilterCaseSensitivity.CaseInsensitive;
+
+
+    private RadzenDataGrid<PlanactualTemp>? datagrid;
+
+    private IEnumerable<PlanactualTemp>? planactualTemps;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+
+        planactualTemps = await Http.GetFromJsonAsync<List<PlanactualTemp>>("api/PlanActualTemp");
+    }
+
+    public long? Qty01;
+
+    public long? Qty02;
+
+    public long? Qty03;
+
+    public long? Qty04;
+
+    public int? Qty05;
+
+    public long? Qty06;
+
+    public long? Qty07;
+
+    public long? Qty08;
+
+    public long? Qty09;
+
+    public long? Qty10;
+
+    public long? Qty11;
+
+    public long? Qty12;
+
+    public long? Qty13;
+
+    public long? Qty14;
+
+    public long? Qty15;
+
+    public long? Qty16;
+
+    public long? Qty17;
+
+    public long? Qty18;
+
+    public long? Qty19;
+
+    public long? Qty20;
+
+    public long? Qty21;
+
+    public long? Qty22;
+
+    public long? Qty23;
+
+    public long? Qty24;
+
+    public long? Qty25;
+
+    public long? Qty26;
+
+    public long? Qty27;
+
+    public long? Qty28;
+
+    public long? Qty29;
+
+    public long? Qty30;
+
+    public long? Qty31;
+
+    public long? Qty32;
+
+    public long? Qty33;
+
+    public long? Qty34;
+
+    public long? Qty35;
+
+    public long? Qty36;
+
+    public long? Qty37;
+
+    public long? Qty38;
+
+    public long? Qty39;
+
+    public long? Qty40;
+
+    public long? Qty41;
+
+    public long? Qty42;
+
+    public long? Qty43;
+
+    public long? Qty44;
+
+    public long? Qty45;
+
+    public long? Qty46;
+
+    public long? Qty47;
+
+    public long? Qty48;
+
+    public long? Qty49;
+
+    public long? Qty50;
+
+    public long? Qty51;
+
+    public long? Qty52;
+
+    public string? ItemCode;
+
+    public long? InventoryItemId;
+
+    public string? ItemDescription;
+
+    public long? CustSiteId;
+
+    public string? EntryDescription;
+
+    public string? SortType;
+
+    public long? QtyTotal;
+
+    public DateOnly? ItemDate;
+
+}

@@ -1,0 +1,56 @@
+﻿@page "/"
+@layout Loginlayout
+@inject HttpClient Http
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+
+@using BlazorApp1.Shared;
+
+<div>
+
+    <RadzenCard class="rz-my-12 rz-mx-auto rz-p-4 rz-p-md-12 " style="max-width: 600px;">
+        <RadzenTemplateForm Data=@("LoginWithDefaultValues")>
+            <RadzenLogin AllowRegister="false" AllowResetPassword="false" Username=@UserName Password=@Password
+                         AllowRememberMe="true" RememberMe="@RememberMe"
+                         Login=@OnLogin />
+        </RadzenTemplateForm>
+        <RadzenStack AlignItems="AlignItems.Center" Class="rz-mx-auto rz-my-12">
+        </RadzenStack>
+    </RadzenCard>
+
+</div>
+
+
+@code {
+
+
+    string UserName = "admin";
+    string Password = "admin";
+    bool RememberMe = true;
+
+    private IEnumerable<EappUser>? EappUsers;
+
+
+    protected async Task OnLogin(LoginArgs args)
+    {
+        try
+        {
+            var response = await Http.GetFromJsonAsync<EappUser>($"api/Login?UserNo={args.Username}&Password={args.Password}");
+
+            if (response != null)
+            {
+                Navigation.NavigateTo("/Dashboard"); 
+            }
+
+        }
+        catch (Exception ex)
+        {
+            
+        }
+    }
+
+
+
+
+        
+}

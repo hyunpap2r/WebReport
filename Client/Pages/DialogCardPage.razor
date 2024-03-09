@@ -1,0 +1,93 @@
+﻿@page "/dialogcardpage"
+@using BlazorApp1.Shared
+
+
+
+@if (InvPickRequests != null && InvPickRequests.Any())
+{
+    if (ListType.ToString() == "All")
+    {
+        <div>
+            <RadzenStack Gap="1rem">
+                <RadzenDataGrid  AllowPaging="false" AllowSorting="true" FilterMode="FilterMode.Simple" AllowFiltering="true"
+                                Data="@InvPickRequests.OrderBy(c => c.PickFlag)" TItem="InvPickRequest" ColumnWidth="180px" AllowColumnResize=true Density="Density.Compact" AllowAlternatingRows="false">
+                    <Columns>
+                        <RadzenDataGridColumn Width="105px" TItem="InvPickRequest" Property="ExtendDate" Title="일정">
+                            <Template Context="data">
+                                @data.ExtendDate.ToString().Substring(0, 10)
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn  TItem="InvPickRequest" Property="ItemCode" Title="제품코드" />
+                        <RadzenDataGridColumn  TItem="InvPickRequest" Property="ItemDescription" Title="제품명" />
+                        <RadzenDataGridColumn Width="95px" TItem="InvPickRequest" Property="OrderNo" Title="수주번호" />
+                        <RadzenDataGridColumn Width="95px" TItem="InvPickRequest" Property="CustSiteCode" Title="고객사 코드" />
+                        <RadzenDataGridColumn Width="85px" TItem="InvPickRequest" Property="DeliveryQty" Title="수량" />
+                        <RadzenDataGridColumn Width="85px" TItem="InvPickRequest" Property="PickFlag" Title="현황" />
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenStack>
+        </div>
+    }
+    else if (ListType.ToString() == "Completed")
+    {
+        <div>
+            <RadzenStack Gap="1rem">
+                <RadzenDataGrid AllowFiltering="true" AllowPaging="false" AllowSorting="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Data="@InvPickRequests.Where(c=>c.PickFlag == "Y").OrderBy(c => c.ItemCode)" TItem="InvPickRequest" ColumnWidth="180px" AllowColumnResize=true Density="Density.Compact" AllowAlternatingRows="false">
+                    <Columns >
+                        <RadzenDataGridColumn Width="105px" TItem="InvPickRequest" Property="ExtendDate" Title="일정">
+                            <Template Context="data">
+                                @data.ExtendDate.ToString().Substring(0, 10)
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn  TItem="InvPickRequest" Property="ItemCode" Title="제품코드" />
+                        <RadzenDataGridColumn  TItem="InvPickRequest" Property="ItemDescription" Title="제품명" />
+                        <RadzenDataGridColumn Width="95px" TItem="InvPickRequest" Property="OrderNo" Title="수주번호" />
+                        <RadzenDataGridColumn Width="95px" TItem="InvPickRequest" Property="CustSiteCode" Title="고객사 코드" />
+                        <RadzenDataGridColumn Width="85px" TItem="InvPickRequest" Property="DeliveryQty" Title="수량" />
+                        <RadzenDataGridColumn Width="85px" TItem="InvPickRequest" Property="PickFlag" Title="현황" />
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenStack>
+        </div>
+    }
+    else if (ListType.ToString() == "Missing")
+    {
+        <div>
+            <RadzenStack Gap="1rem">
+                <RadzenDataGrid AllowFiltering="true" AllowPaging="false" AllowSorting="true" FilterPopupRenderMode="PopupRenderMode.OnDemand" FilterCaseSensitivity="FilterCaseSensitivity.CaseInsensitive"
+                                Data="@InvPickRequests.Where(c=>c.PickFlag == "N").OrderBy(c => c.ItemCode)" TItem="InvPickRequest" ColumnWidth="180px" AllowColumnResize=true Density="Density.Compact" AllowAlternatingRows="false">
+                    <Columns>
+                        <RadzenDataGridColumn Width="105px" TItem="InvPickRequest" Property="ExtendDate" Title="일정">
+                            <Template Context="data">
+                                @data.ExtendDate.ToString().Substring(0,10)
+                            </Template>
+                        </RadzenDataGridColumn>
+                        <RadzenDataGridColumn  TItem="InvPickRequest" Property="ItemCode" Title="제품코드" />
+                        <RadzenDataGridColumn  TItem="InvPickRequest" Property="ItemDescription" Title="제품명" />
+                        <RadzenDataGridColumn Width="95px" TItem="InvPickRequest" Property="OrderNo" Title="수주번호" />
+                        <RadzenDataGridColumn Width="95px" TItem="InvPickRequest" Property="CustSiteCode" Title="고객사 코드" />
+                        <RadzenDataGridColumn Width="85px" TItem="InvPickRequest" Property="DeliveryQty" Title="수량" />
+                        <RadzenDataGridColumn Width="85px" TItem="InvPickRequest" Property="PickFlag" Title="현황" />
+                    </Columns>
+                </RadzenDataGrid>
+            </RadzenStack>
+        </div>
+    }
+
+}
+else
+{
+    <p>데이터가 없습니다.</p>
+}
+
+@code {
+    [Parameter]
+    public IEnumerable<InvPickRequest> InvPickRequests { get; set; }
+
+    [Parameter]
+    public string ListType { get; set; }
+
+
+
+}

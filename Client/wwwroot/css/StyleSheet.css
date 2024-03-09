@@ -1,0 +1,21 @@
+﻿body {
+}
+
+
+
+.rounded-button {
+    border-radius: 20px; 
+    padding: 10px 20px; 
+    border: none; 
+    background-color: #007bff; 
+    color: #fff; 
+    cursor: pointer; 
+}
+
+    .rounded-button:hover {
+        background-color: #0056b3;
+    }
+
+
+
+
