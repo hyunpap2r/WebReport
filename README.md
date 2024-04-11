@@ -10,6 +10,12 @@ Your understanding in this matter is greatly appreciated.
 However, I promise that you can expect to see better quality projects with each visit, so stay tuned!
 
 
+![1](https://github.com/hyunpap2r/WebReport/assets/91259577/2fb39892-af6d-4b14-bf01-cf6b4ef17d33)
+![2](https://github.com/hyunpap2r/WebReport/assets/91259577/27e8c133-0f31-41a1-a580-5a164b0ef678)
+![3](https://github.com/hyunpap2r/WebReport/assets/91259577/4beca855-09bc-4325-b6c2-4e1f8df8de64)
+
+
+
 
 
 
